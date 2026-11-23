@@ -1,0 +1,28 @@
+;; ISCO-08 major group 5 (Services and Sales Workers) — physical-AI sample.
+;; The physical work declared here is the handling the occupation itself
+;; entails (ASSUMPTION, to be replaced with a sourced premise): moving stock
+;; cases from the shop delivery crate onto the sales shelf, and delivering
+;; sold goods (bagged purchases) from the shop counter to customers.
+;; Every number without a cited source is marked `estimate` in its :basis.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-5"
+ :cases
+ [{:id :stock-to-shelf-setup
+   :kind :manipulator
+   :procedure "arm moves a case of stock from the delivery crate onto the sales shelf"
+   :params {:l1-m 0.55 :l2-m 0.50 :m1-kg 5.0 :m2-kg 4.0
+            :from [0.70 -0.25] :to [0.40 0.80] :duration-s 3.5 :steps 700}
+   :sweep {:param :payload-kg :values [1.0 3.0 5.0 8.0 10.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 70.0 :basis "estimate: continuous shoulder torque of a light collaborative arm (~5 kg class)"}
+   :boundary {:lo 0.1 :hi 35.0}}
+  {:id :shop-goods-delivery
+   :kind :transport
+   :procedure "shop AMR delivers sold goods (bagged purchases) from the shop counter to customers"
+   :params {:mass-kg 30.0 :payload-kg 6.0 :v-max-mps 1.0 :a-max-mps2 0.5
+            :brake-decel-mps2 0.7 :drive-force-n 60.0 :crr 0.02
+            :cog-height-m 0.45 :support-half-length-m 0.20}
+   :sweep {:param :distance-m :values [15.0 30.0 50.0 80.0 150.0]}
+   :quantity :cycle-time-s
+   :limit {:max 90.0 :basis "estimate: each customer delivery within 90 s so the sales shift keeps counter service on time"}
+   :boundary {:lo 5.0 :hi 300.0}}]}
